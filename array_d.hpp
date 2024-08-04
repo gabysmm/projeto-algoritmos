@@ -6,7 +6,7 @@ class array_d {
     int *p_lista; //criar ponteiro q vai apontar para os espaços de memoria do nosso array
     unsigned int tamanho, capacidade; //criando variavel que vai determinar tamanho e a capacidade do array
     void increase_capacity() { //vai aumentar a capacidade do array
-      capacidade = capacidade * 2;
+      capacidade = 1000;
       int *novo_array = new int[capacidade];
       for(unsigned i = 0; i < tamanho; i++){  //como percorre todo array, vai ser O(N)
         novo_array[i] = p_lista[i];
@@ -18,7 +18,7 @@ class array_d {
   public:  //O(1) talvez ja que tem valores "fixos"
     array_d () { //construtor que vai estabelecer os valores iniciais do array
       this->tamanho = 0;
-      this->capacidade = 8;
+      this->capacidade = 1000;
       this->p_lista = new int[capacidade];
     }
     ~array_d() { //destrutor que vai liberar a memoria do array

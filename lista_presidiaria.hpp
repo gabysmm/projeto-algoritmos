@@ -28,8 +28,38 @@ class lista_presidiaria {
       return 1.0; //numa lista ligada como capacidade = tamanho meio que sempre, independente se a gente adicionar ou tirar memória, então podemos dizer que o percentual ocupado é sempre 100% que é = 1
     }
 
-  bool insert_at(unsigned int index, int value) {} //NÃO FEITA
-  bool remove_at(unsigned int index) {} //NÃO FEITA
+  bool insert_at(unsigned int index, int value) {
+    unsigned int x = 0;
+    node *elemento = this->head;
+    while (elemento != nullptr){
+      if (x == index - 1){
+        node *novo = new node;
+        novo->valor = value;
+        novo->proximo = elemento->proximo;
+        elemento->proximo = novo;
+        novo->anterior = elemento;
+        this->tamanho++;
+        return true;
+      }
+      elemento = elemento->proximo;
+      x++;
+    }
+    return false;
+  }
+  bool remove_at(unsigned int index) { //QUE FUNÇÂO CHATAAAAA TO QUASE CHRANDO
+    if (index >= this->tamanho) return false;
+    node *atual = this->head;
+    for (unsigned int i = 0; i < index; ++i){
+      atual = atual->proximo;
+    }
+    if (atual->anterior) atual->anterior->proximo = atual->proximo;
+    if (atual->proximo) atual->proximo->anterior = atual->anterior;
+    if (atual == this->head) this->head = atual->proximo;
+    if (atual == this->tail) this->tail = atual->anterior;
+    delete atual;
+    this->tamanho -= 1;
+    return true;
+  }
   int get_at(unsigned int index) {
     node *atual = this->head; //cria um novo ponteiro q vai percorrer nossa lista, ele vai inicializar no head
     for (unsigned int i = 0; i < index; i++) { //for pra percorrer a lista até o indice escolhido
@@ -110,6 +140,61 @@ class lista_presidiaria {
       return;
     } else {
       return this->head->valor; //se n tiver vai retornar o valor da "cabeça"
+    }
+  }
+  bool remove(int value) {
+   node *atual = this->head;
+   while(atual == nullptr && atual->valor != value){
+    atual = atual->proximo;
+   }
+   if (atual == nullptr) {
+    return false;
+   }
+   if (atual->proximo != nullptr) {
+    atual->anterior->proximo = atual->proximo;
+   } else {
+    this->head = atual->proximo;
+   }
+   if (atual->proximo != nullptr) {
+    atual->proximo->anterior = atual->anterior;
+   } else {
+    this->tail = atual->anterior;
+   }
+   delete atual;
+   return true;
+  }
+    int find(int value) {
+      node *atual = this->head; //vai inicializar a partir do head nosso ponteiro auxiliar atual
+      int index = 0;
+      while (atual != nullptr) { //percorre a lista
+        if (atual->valor == value) { //se o valores forem iguais
+          return index; //retornar o index q se encontra o valor 
+        }
+        atual = atual->proximo; //se não vai só continuar deslocando
+        index++; //e aumentando esse index ai
+      }
+      return -1; //se o valor n foi encontrado
+    }
+    int count(int value) {
+      node *atual = this->head; //criação de ponteiro que vai ser inciailizado na cabeça ou seja inicio da lista
+      int contador = 0;
+      while (atual != nullptr) { //vai percorrer a lista
+        if (atual->valor == value) { //valor do elemento atual se for igual ao valor que foi pedido
+          contador++; //vai adicionar ao contador
+        }
+        atual = atual->proximo; //vai ficar deslocando 
+      }
+      return contador;
+    }
+
+    int sum() {
+      node *atual = this->head; //criando um nó que vai se inicializar na cabeça
+      int total=0; 
+      while (atual != nullptr){ //vai percorrer a lista adicionando 
+        total += atual->valor; //variavel total vai somando os valores que o atual chega
+        atual = atual->proximo; //vai deslocar o ponteiro auxilir atual pros proximos
+      }
+      return total; 
     }
 };
 #endif
