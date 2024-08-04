@@ -11,8 +11,8 @@ class lista_presidiaria {
     unsigned int tamanho; 
   public: 
     lista_presidiaria() { //Construtor
-      this->head == nullptr;
-      this->tail == nullptr;
+      this->head = nullptr; //correção de '==' para '='
+      this->tail = nullptr; //correção de '==' para '='
       this->tamanho = 0;
     }
     ~lista_presidiaria() { //Destrutor
@@ -29,23 +29,38 @@ class lista_presidiaria {
     }
 
   bool insert_at(unsigned int index, int value) {
-    unsigned int x = 0;
-    node *elemento = this->head;
-    while (elemento != nullptr){
-      if (x == index - 1){
-        node *novo = new node;
-        novo->valor = value;
-        novo->proximo = elemento->proximo;
-        elemento->proximo = novo;
-        novo->anterior = elemento;
-        this->tamanho++;
-        return true;
+    if (index > this->tamanho) return false; // Verifica se o índice é válido
+    node *novo = new node; // Cria um novo nó
+    novo->valor = value; // Define o valor do novo nó
+    if (index == 0) { // Inserção na cabeça
+      novo->proximo = this->head; // O próximo do novo nó é o antigo head
+      novo->anterior = nullptr; // O anterior é nulo porque será o primeiro elemento
+      if (this->head != nullptr) {
+        this->head->anterior = novo; // Se a lista não estava vazia, o anterior do antigo head agora aponta para o novo nó
       }
-      elemento = elemento->proximo;
-      x++;
+      this->head = novo; // Atualiza o head para o novo nó
+      if (this->tail == nullptr) {
+        this->tail = novo; // Se a lista estava vazia, o novo nó é também o tail
+      }
+    } else {
+      node *elemento = this->head; // Cria um ponteiro para percorrer a lista
+      for (unsigned int x = 0; x < index - 1; ++x) {
+        elemento = elemento->proximo; // Avança até o nó anterior à posição desejada
+      }
+      novo->proximo = elemento->proximo; // O próximo do novo nó é o próximo do elemento atual
+      novo->anterior = elemento; // O anterior do novo nó é o elemento atual
+      if (elemento->proximo != nullptr) {
+        elemento->proximo->anterior = novo; // O anterior do próximo nó do elemento atual agora aponta para o novo nó
+      }
+      elemento->proximo = novo; // O próximo do elemento atual agora aponta para o novo nó
+      if (novo->proximo == nullptr) {
+        this->tail = novo; // Se o novo nó foi adicionado ao final, ele se torna o tail
+      }
     }
-    return false;
+    this->tamanho++; // Incrementa o tamanho da lista
+    return true; // Sucesso na inserção
   }
+
   bool remove_at(unsigned int index) { //QUE FUNÇÂO CHATAAAAA TO QUASE CHRANDO
     if (index >= this->tamanho) return false;
     node *atual = this->head;
@@ -60,6 +75,7 @@ class lista_presidiaria {
     this->tamanho -= 1;
     return true;
   }
+
   int get_at(unsigned int index) {
     node *atual = this->head; //cria um novo ponteiro q vai percorrer nossa lista, ele vai inicializar no head
     for (unsigned int i = 0; i < index; i++) { //for pra percorrer a lista até o indice escolhido
@@ -79,6 +95,7 @@ class lista_presidiaria {
     this->tail = nullptr;
     this->tamanho = 0;
   }
+
   void push_back(int value) {
     node *novo = new node; //novo nó da lista
     novo->valor = value; //vai receber o valor
@@ -92,6 +109,7 @@ class lista_presidiaria {
     this-> tail = novo; //atualiza de fato que agora a nossa nova "cauda" ou seja ultimo elemento é o novo elemento
     this->tamanho++;
   }
+
   void push_front(int value) {
     node *novo = new node; //vamos criar um novo nó na lista
     novo->valor = value; //atribuir valor desse nó aí
@@ -105,33 +123,42 @@ class lista_presidiaria {
     this->head = novo; //vai atualizar o head pra apontar pro novo nó LEMBRAR DUPLAMENTE ENCADEADA
     this->tamanho++;
   }
+
   bool pop_back() {
     if (this->tail == nullptr) { //verificando se a lista ta vazia
-      return -1;//se tiver retorna sem remover ne, ja q n tem nada pra remover
+      return false; //corrigido -1 para false
     }
     if (this->head == this->tail) { //verificar se só tem um elemento
       delete this->head; //se tiver head e tail são iguais, ai deleta head deletando o unico elemento
       //o que deixa tanto head como tail vazios
       this->head = nullptr;
       this->tail = nullptr;
+    } else {
+      this->tail = this->tail->anterior; //atualiza o tail para o anterior, para que quando apaguemos o ultimo elemento exista um novo ultimo
+      delete this->tail->proximo; //como tail agora é o "penultimo" elemento, o ultimo vai ser o proximo e vamos deletar ele
+      this->tail->proximo = nullptr; //atualiza o proximo do atual tail para null, já que apagamos esse "prox" antigo ultimo elemento
     }
-    this->tail = this->tail->anterior; //atualiza o tail para o anterior, para que quando apaguemos o ultimo elemento exista um novo ultimo
-    delete this->tail->proximo; //como tail agora é o "penultimo" elemento, o ultimo vai ser o proximo e vamos deletar ele
-    this->tail->proximo = nullptr; //atualiza o proximo do atual tail para null, já que apagamos esse "prox" antigo ultimo elemento
+    this->tamanho--; // Decrementa o tamanho da lista
+    return true; //corrigido para retornar true ao invés de void
   }
+
   bool pop_front() {
     if(this->head == nullptr) { //verificar se a lista não ta vazia
-      return -1;
+      return false; //corrigido -1 para false
     }
     if (this->head == this->tail) { //verificar se só tem um elemento
       delete this->head; //se tiver head e tail são iguais, ai deleta head deletando o unico elemento
       this->head = nullptr; //atualiza os valores de head e tail que agora estão vazios pq n tem elemento
       this->tail = nullptr;
+    } else {
+      this->head = this->head->proximo; //atualiza o head para o proximo, para que quando apaguemos o primeiro elemento exista um novo
+      delete this->head->anterior; //como head agora é o "segundo" elemento, o primeiro vai ser o anterior e vamos deletar ele
+      this->head->anterior = nullptr; //agora o anterior do head é null ebaa
     }
-    this->head = this->head->proximo; //atualiza o head para o proximo, para que quando apaguemos o primeiro elemento exista um novo
-    delete this->head->anterior; //como head agora é o "segundo" elemento, o primeiro vai ser o anterior e vamos deletar ele
-    this->head->anterior = nullptr; //agora o anterior do head é null ebaa
+    this->tamanho--; // Decrementa o tamanho da lista
+    return true; //corrigido para retornar true ao invés de void
   }
+
   int back(){
     if(this->tail == nullptr) { //verifica se a lista n ta vazia
       return -1;
@@ -139,6 +166,7 @@ class lista_presidiaria {
       return this->tail->valor; // se n tiver vai retornar o valor do ultimo elemento que é nossa "caudinha"
     }
   }
+
   int front(){
     if(this->head == nullptr) { //verifica se a lista n ta vazia
       return -1;
@@ -146,59 +174,63 @@ class lista_presidiaria {
       return this->head->valor; //se n tiver vai retornar o valor da "cabeça"
     }
   }
-  bool remove(int value) {
-   node *atual = this->head;
-   while(atual == nullptr && atual->valor != value){
-    atual = atual->proximo;
-   }
-   if (atual == nullptr) {
-    return false;
-   }
-   if (atual->proximo != nullptr) {
-    atual->anterior->proximo = atual->proximo;
-   } else {
-    this->head = atual->proximo;
-   }
-   if (atual->proximo != nullptr) {
-    atual->proximo->anterior = atual->anterior;
-   } else {
-    this->tail = atual->anterior;
-   }
-   delete atual;
-   return true;
-  }
-    int find(int value) {
-      node *atual = this->head; //vai inicializar a partir do head nosso ponteiro auxiliar atual
-      int index = 0;
-      while (atual != nullptr) { //percorre a lista
-        if (atual->valor == value) { //se o valores forem iguais
-          return index; //retornar o index q se encontra o valor 
-        }
-        atual = atual->proximo; //se não vai só continuar deslocando
-        index++; //e aumentando esse index ai
-      }
-      return -1; //se o valor n foi encontrado
-    }
-    int count(int value) {
-      node *atual = this->head; //criação de ponteiro que vai ser inciailizado na cabeça ou seja inicio da lista
-      int contador = 0;
-      while (atual != nullptr) { //vai percorrer a lista
-        if (atual->valor == value) { //valor do elemento atual se for igual ao valor que foi pedido
-          contador++; //vai adicionar ao contador
-        }
-        atual = atual->proximo; //vai ficar deslocando 
-      }
-      return contador;
-    }
 
-    int sum() {
-      node *atual = this->head; //criando um nó que vai se inicializar na cabeça
-      int total=0; 
-      while (atual != nullptr){ //vai percorrer a lista adicionando 
-        total += atual->valor; //variavel total vai somando os valores que o atual chega
-        atual = atual->proximo; //vai deslocar o ponteiro auxilir atual pros proximos
-      }
-      return total; 
+  bool remove(int value) {
+    node *atual = this->head;
+    while(atual != nullptr && atual->valor != value){ // Corrigido nullptr para !=
+      atual = atual->proximo;
     }
+    if (atual == nullptr) {
+      return false;
+    }
+    if (atual->anterior != nullptr) {
+      atual->anterior->proximo = atual->proximo;
+    } else {
+      this->head = atual->proximo;
+    }
+    if (atual->proximo != nullptr) {
+      atual->proximo->anterior = atual->anterior;
+    } else {
+      this->tail = atual->anterior;
+    }
+    delete atual;
+    this->tamanho--; // Decrementa o tamanho da lista
+    return true;
+  }
+
+  int find(int value) {
+    node *atual = this->head; //vai inicializar a partir do head nosso ponteiro auxiliar atual
+    int index = 0;
+    while (atual != nullptr) { //percorre a lista
+      if (atual->valor == value) { //se os valores forem iguais
+        return index; //retornar o index q se encontra o valor 
+      }
+      atual = atual->proximo; //se não vai só continuar deslocando
+      index++; //e aumentando esse index ai
+    }
+    return -1; //se o valor n foi encontrado
+  }
+
+  int count(int value) {
+    node *atual = this->head; //criação de ponteiro que vai ser inicializado na cabeça ou seja inicio da lista
+    int contador = 0;
+    while (atual != nullptr) { //vai percorrer a lista
+      if (atual->valor == value) { //valor do elemento atual se for igual ao valor que foi pedido
+        contador++; //vai adicionar ao contador
+      }
+      atual = atual->proximo; //vai ficar deslocando 
+    }
+    return contador;
+  }
+
+  int sum() {
+    node *atual = this->head; //criando um nó que vai se inicializar na cabeça
+    int total = 0; 
+    while (atual != nullptr){ //vai percorrer a lista adicionando 
+      total += atual->valor; //variavel total vai somando os valores que o atual chega
+      atual = atual->proximo; //vai deslocar o ponteiro auxiliar atual pros próximos
+    }
+    return total; 
+  }
 };
 #endif
