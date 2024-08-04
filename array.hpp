@@ -8,7 +8,7 @@ class array_d {
     void increase_capacity() { //vai aumentar a capacidade do array
       capacidade += 100;
       int *novo_array = new int[capacidade];
-      for(int i = 0; i < tamanho; i++){  //como percorre todo array, vai ser O(N)
+      for(unsigned i = 0; i < tamanho; i++){  //como percorre todo array, vai ser O(N)
         novo_array[i] = p_lista[i];
       }
       delete [] p_lista; 
@@ -45,7 +45,7 @@ class array_d {
       if (this->tamanho == this->capacidade) { 
         increase_capacity(); 
       } //vai aumentar a capacidade do array caso esteja cheio
-      for (unsigned int i = this->tamanho; i > index; i--) { //vai percorrer a lista desde o ultimo numero
+      for (unsigned int i = this->tamanho; i > index; --i) { //vai percorrer a lista desde o ultimo numero
         p_lista[i] = p_lista[i-1]; //vai meio q ocorrer um deslocamento de indice, do ultimo pro anterior, percorrendo até chegar no indice que queremos //O(N)
       }
       p_lista[index] = value; //o index escolhido vai receber o valor novo. Ou seja, vai ser meio q inserido um novo elemento. 
@@ -85,16 +85,13 @@ class array_d {
     this->tamanho += 1; 
   }
   void push_front(int value) { //vai adicionar um elemento no inicio do array
-    if (this->tamanho == this->capacidade) { 
-      increase_capacity();
-    } else {
-      for (unsigned int i = this->tamanho; i > 0; i--){ //vai deslocar nosso array 
+    if (this->tamanho == this->capacidade) increase_capacity();
+    this->tamanho ++;
+    for (unsigned int i = this->tamanho - 1; i > 0; i--){ //vai deslocar nosso array 
         p_lista[i] = p_lista[i-1]; //deslocando os elementos
       }
       p_lista[0] = value; //vai adicionar o valor novo no inicio do array
-      tamanho += 1;
-    }
-  }
+   }
   bool pop_back() {
     if (this->tamanho == 0) { //verificar se a lista ta vazia
       return false;
