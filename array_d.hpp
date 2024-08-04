@@ -87,7 +87,7 @@ class array_d {
   void push_front(int value) { //vai adicionar um elemento no inicio do array
     if (this->tamanho == this->capacidade) increase_capacity();
     this->tamanho ++;
-    for (unsigned int i = this->tamanho - 1; i > 0; i--){ //vai deslocar nosso array 
+    for (unsigned int i = this->tamanho; i > 0; i--){ //vai deslocar nosso array 
         p_lista[i] = p_lista[i-1]; //deslocando os elementos
       }
       p_lista[0] = value; //vai adicionar o valor novo no inicio do array

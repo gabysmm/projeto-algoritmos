@@ -1,6 +1,6 @@
 #include <iostream>
 #include <chrono>
-#include "array.hpp"
+#include "array_d.hpp"
 
 int main() {
     int n;
