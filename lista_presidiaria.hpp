@@ -75,7 +75,9 @@ class lista_presidiaria {
       atual = atual->proximo; //atual vai receber o proximo elemento da lista
       delete remover; //vai remover elemento do atual
     }
-    lista_presidiaria(); //chamando o construtor pra zerar tudo
+    this->head = nullptr; //chamando o construtor pra zerar tudo
+    this->tail = nullptr;
+    this->tamanho = 0;
   }
   void push_back(int value) {
     node *novo = new node; //novo nó da lista
@@ -86,8 +88,9 @@ class lista_presidiaria {
       this->head = novo; //se a lista ta vazia, o novo elemento vai ser o primeiro elemento da lista e consequetemente o ultimo tbm
     } else {
       this->tail->proximo = novo; //ai se tiver cheia, o ponteiro do proximo vai apontar pro novo elemento
-      this-> tail = novo; //atualiza de fato que agora a nossa nova "cauda" ou seja ultimo elemento é o novo elemento
     }
+    this-> tail = novo; //atualiza de fato que agora a nossa nova "cauda" ou seja ultimo elemento é o novo elemento
+    this->tamanho++;
   }
   void push_front(int value) {
     node *novo = new node; //vamos criar um novo nó na lista
@@ -100,10 +103,11 @@ class lista_presidiaria {
       this->head->anterior = novo; //se a lista não tiver vazia, o anterior do head vai ser o novo elemento
     }
     this->head = novo; //vai atualizar o head pra apontar pro novo nó LEMBRAR DUPLAMENTE ENCADEADA
+    this->tamanho++;
   }
   bool pop_back() {
     if (this->tail == nullptr) { //verificando se a lista ta vazia
-      return; //se tiver retorna sem remover ne, ja q n tem nada pra remover
+      return -1;//se tiver retorna sem remover ne, ja q n tem nada pra remover
     }
     if (this->head == this->tail) { //verificar se só tem um elemento
       delete this->head; //se tiver head e tail são iguais, ai deleta head deletando o unico elemento
@@ -117,7 +121,7 @@ class lista_presidiaria {
   }
   bool pop_front() {
     if(this->head == nullptr) { //verificar se a lista não ta vazia
-      return;
+      return -1;
     }
     if (this->head == this->tail) { //verificar se só tem um elemento
       delete this->head; //se tiver head e tail são iguais, ai deleta head deletando o unico elemento
@@ -130,14 +134,14 @@ class lista_presidiaria {
   }
   int back(){
     if(this->tail == nullptr) { //verifica se a lista n ta vazia
-      return;
+      return -1;
     } else { 
       return this->tail->valor; // se n tiver vai retornar o valor do ultimo elemento que é nossa "caudinha"
     }
   }
   int front(){
     if(this->head == nullptr) { //verifica se a lista n ta vazia
-      return;
+      return -1;
     } else {
       return this->head->valor; //se n tiver vai retornar o valor da "cabeça"
     }

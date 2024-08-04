@@ -7,7 +7,7 @@ int main() {
     std::cin >> n;
     lista_presidiaria l1;
     auto beg = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < n; i += 100) {
+    for (int i = 0; i < n; i++) {
         int x;
         std::cin >> x;
         l1.push_front(x);
